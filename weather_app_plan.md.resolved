@@ -1,0 +1,73 @@
+# Modern Hava Durumu Web Uygulaması Geliştirme Planı 🌤️
+
+Bu belge, modern, bol animasyonlu ve Docker üzerinde çalışan bir hava durumu uygulamasının sıfırdan geliştirilip GitHub'da yayınlanmasına kadar olan tüm süreci adım adım açıklamaktadır.
+
+## 🛠️ Teknoloji Yığını (Tech Stack)
+
+Uygulamanın şık ve performanslı olması için aşağıdaki teknolojiler kullanılacaktır:
+- **Frontend Framework:** React (Vite ile hızlı kurulum ve performans)
+- **Stil & Tasarım:** Vanilla CSS (Tailwind gibi kütüphanelere bağımlı kalmadan "Glassmorphism" tasarımı ve mikro-animasyonlar için tam kontrol)
+- **Animasyonlar:** Framer Motion (Modern ve akıcı bileşen geçişleri)
+- **Hava Durumu API:** OpenWeatherMap API (Gerçek zamanlı hava durumu verisi için ücretsiz çözüm)
+- **Konteynerleştirme:** Docker & Docker Compose
+- **Versiyon Kontrol & Yayın:** Git, GitHub 
+
+---
+
+## 🎨 Tasarım ve Animasyon Özellikleri
+
+- **Dinamik Arka Planlar:** Havanın mevcut durumuna (Güneşli, Yağmurlu, Karlı, Fırtınalı vb.) göre anlık olarak değişen animasyonlu arka planlar.
+- **Glassmorphism:** Yarı saydam, cam efektli kartlar ve bulanık arka plan (backdrop-filter) etkileriyle premium ve modern bir his.
+- **Pürüzsüz Geçişler (Smooth Transitions):** Sayfa ilk yüklendiğinde içeriklerin yukarıdan yumuşak bir şekilde gelmesi, veriler güncellenirken akıcı renk ve boyut geçişleri.
+- **Mikro Etkileşimler:** Butonların ve hava durumu ikonlarının üzerine gelindiğinde (hover) tepki vermesi.
+
+---
+
+## 🚀 Adım Adım Kurulum ve Geliştirme Şeması
+
+### Adım 1: Projenin Başlatılması ve Bağımlılıklar
+İlk olarak projenin iskeletini Vite ile oluşturulacak ve animasyon/API için gerekli kütüphaneler kurulacaktır.
+
+### Adım 2: İçerik ve Bileşenlerin Geliştirilmesi (Kodlama)
+- **API Servisi:** Seçilen şehre göre hava durumu verilerini çeken yapı.
+- **Ana Tasarım (index.css):** Glassmorphism ve genel uygulama stillerinin eklenmesi.
+- **Bileşenler:** Arama çubuğu, ana hava durumu kartı modern görsellerle zenginleştirilecek.
+
+### Adım 3: Docker Entegrasyonu
+Projenin herhangi bir ortamda sorunsuz çalışması için Dockerize edilmesi.
+Bu adımda projeye bir `Dockerfile` ve projenin ayağa kaldırılmasını otomatikleştirecek bir `docker-compose.yml` dosyası yazılacaktır.
+
+**Dockerfile** taslağı:
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
+```
+
+---
+
+## 🐙 GitHub'a Yükleme ve Yayınlama (Deployment)
+
+### Git Repository Oluşturma
+Yerel olarak kodlar tamamlandıktan ve Docker ile test edildikten sonra projemiz Git ile versiyonlanacaktır:
+```bash
+git init
+git add .
+git commit -m "İlk commit: Modern hava durumu uygulaması hazır"
+git branch -M main
+```
+
+Sonrasında proje GitHub'daki repository'nize eklenecektir:
+```bash
+git remote add origin https://github.com/KULLANICI_ADINIZ/REPO_ADINIZ.git
+git push -u origin main
+```
+
+### Projeyi Canlıya Alma
+GitHub'da proje bir repo haline geldikten sonra:
+1. İsterseniz destekleyen bir platformda (Vercel vb.) GitHub reponuzu bağlayarak anında canlıya alabilirsiniz.
+2. Ya da hazırladığımız Docker yapısı sayesinde kendinize veya AWS, DigitalOcean vb. bir kuruma ait sunucuda repoyu klonlayıp canlı yayına alabilirsiniz.

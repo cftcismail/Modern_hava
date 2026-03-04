@@ -1,12 +1,11 @@
-version: '3.8'
-
 services:
   web:
     build: .
     ports:
-      - "5173:5173"
+      - "5174:5173"
     volumes:
       - .:/app
       - /app/node_modules
     environment:
-      - CHOKIDAR_USEPOLLING=true # Windows ve Docker hot reload için gerekli
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_OPENWEATHER_API_KEY=6ab518aeb39721a0cf30c1f467731d74
