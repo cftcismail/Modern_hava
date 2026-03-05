@@ -8,6 +8,8 @@ import HourlyForecast from './components/HourlyForecast';
 import AQIBadge from './components/AQIBadge';
 import FavoriteCities from './components/FavoriteCities';
 import ForecastModal from './components/ForecastModal';
+import LoadingSkeleton from './components/LoadingSkeleton';
+import UnitToggle from './components/UnitToggle';
 import { useFavorites } from './hooks/useFavorites';
 import {
     fetchWeatherByCity,
@@ -26,7 +28,8 @@ function App() {
     const [dailyForecast, setDailyForecast] = useState([]);
     const [aqi, setAqi] = useState(null);
     const [showForecast, setShowForecast] = useState(false);
-    const { favorites, add: addFav, remove: removeFav, has: isFav } = useFavorites();
+    const [unit, setUnit] = useState('C');
+    const { favorites, add: addFav, remove: removeFav } = useFavorites();
 
     const loadExtras = async (lat, lon) => {
         const [h, d, a] = await Promise.all([
@@ -82,9 +85,12 @@ function App() {
             <WeatherBackground condition={weatherData?.condition} icon={weatherData?.icon} />
 
             <main className="glass-panel" style={{ width: '100%', maxWidth: '500px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 10 }}>
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', position: 'relative' }}>
                     <h1 style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Hava Durumu</h1>
                     <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>Anlık sıcaklık değerlerini öğrenin</p>
+                    <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                        <UnitToggle unit={unit} onChange={setUnit} />
+                    </div>
                 </div>
 
                 <SearchBar onSearch={handleSearch} onLocate={handleLocate} loading={loading} />
@@ -112,8 +118,11 @@ function App() {
                 <WeatherCard
                     data={weatherData}
                     loading={loading}
+                    unit={unit}
                     onShowForecast={dailyForecast.length > 0 ? () => setShowForecast(true) : null}
                 />
+
+                {loading && !weatherData && <LoadingSkeleton />}
 
                 <HourlyForecast items={hourly} />
             </main>

@@ -31,6 +31,9 @@ export const fetchWeatherByCity = async (city) => {
             feelsLike: data.main.feels_like,
             humidity: data.main.humidity,
             windSpeed: data.wind.speed * 3.6, // m/s to km/h donusumu
+            windDeg: data.wind.deg ?? null,
+            pressure: data.main.pressure,
+            visibility: data.visibility != null ? Math.round(data.visibility / 1000) : null, // km
             condition: data.weather[0].main,
             description: data.weather[0].description,
             icon: data.weather[0].icon,
@@ -81,6 +84,9 @@ export const fetchWeatherByCoords = async (lat, lon) => {
             feelsLike: data.main.feels_like,
             humidity: data.main.humidity,
             windSpeed: data.wind.speed * 3.6,
+            windDeg: data.wind.deg ?? null,
+            pressure: data.main.pressure,
+            visibility: data.visibility != null ? Math.round(data.visibility / 1000) : null,
             condition: data.weather[0].main,
             description: data.weather[0].description,
             icon: data.weather[0].icon,

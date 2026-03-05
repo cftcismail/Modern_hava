@@ -1,12 +1,45 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Droplets, Wind, Thermometer, ArrowDown, ArrowUp } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
+import { Droplets, Wind, Thermometer, ArrowDown, ArrowUp, Eye, Gauge, Share2 } from 'lucide-react';
+import { convertTemp, tempLabel } from './UnitToggle';
+
+// Wind degree → compass label
+const windDir = (deg) => {
+    if (deg == null) return '—';
+    const dirs = ['K', 'KKD', 'KD', 'DKD', 'D', 'DGD', 'GD', 'GGD', 'G', 'GGB', 'GB', 'BGB', 'B', 'KBB', 'KB', 'KKB'];
+    return dirs[Math.round(deg / 22.5) % 16];
+};
+
+// SVG compass needle
+const CompassIcon = ({ deg }) => {
+    if (deg == null) return <Wind size={22} color="rgba(255,255,255,0.7)" />;
+    return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
+            <line x1="12" y1="4" x2="12" y2="12"
+                stroke="#ef9a9a" strokeWidth="2.5" strokeLinecap="round"
+                transform={`rotate(${deg}, 12, 12)`} />
+            <line x1="12" y1="12" x2="12" y2="20"
+                stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round"
+                transform={`rotate(${deg}, 12, 12)`} />
+            <circle cx="12" cy="12" r="2.5" fill="white" />
+        </svg>
+    );
+};
+
+const StatCell = ({ icon, label, value }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+        {icon}
+        <span style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', textAlign: 'center' }}>{label}</span>
+        <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{value}</span>
+    </div>
+);
 
 const SunArc = ({ sunrise, sunset, timezone }) => {
     if (!sunrise || !sunset) return null;
 
-    // Convert to local time of the queried city
-    const nowUtc = Math.floor(Date.now() / 1000);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const nowUtc = useMemo(() => Math.floor(Date.now() / 1000), []);
     const nowLocal = nowUtc + (timezone || 0);
     const riseLocal = sunrise + (timezone || 0);
     const setLocal = sunset + (timezone || 0);
@@ -16,14 +49,13 @@ const SunArc = ({ sunrise, sunset, timezone }) => {
     const progress = total > 0 ? elapsed / total : 0;
 
     const toHHMM = (utcTs) => {
-        const d = new Date((utcTs) * 1000);
+        const d = new Date(utcTs * 1000);
         return d.toUTCString().slice(17, 22);
     };
 
-    // SVG arc: semi-circle from left to right
     const W = 220, H = 110, R = 90, cx = W / 2, cy = H;
     const toPoint = (t) => {
-        const angle = Math.PI - t * Math.PI; // 0→π reversed so left=rise, right=set
+        const angle = Math.PI - t * Math.PI;
         return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
     };
     const sun = toPoint(progress);
@@ -32,9 +64,7 @@ const SunArc = ({ sunrise, sunset, timezone }) => {
     return (
         <div className="sun-arc-wrapper">
             <svg viewBox={`0 0 ${W} ${H}`} className="sun-arc-svg">
-                {/* track */}
                 <path d={arcPath} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="3" strokeLinecap="round" />
-                {/* filled progress */}
                 {progress > 0 && (
                     <path
                         d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${sun.x} ${sun.y}`}
@@ -44,7 +74,6 @@ const SunArc = ({ sunrise, sunset, timezone }) => {
                         strokeLinecap="round"
                     />
                 )}
-                {/* sun dot */}
                 <circle cx={sun.x} cy={sun.y} r="7" fill="#ffd54f" />
                 <circle cx={sun.x} cy={sun.y} r="12" fill="rgba(255,213,79,0.25)" />
             </svg>
@@ -56,8 +85,18 @@ const SunArc = ({ sunrise, sunset, timezone }) => {
     );
 };
 
-const WeatherCard = ({ data, loading, onShowForecast }) => {
+const WeatherCard = ({ data, loading, onShowForecast, unit = 'C' }) => {
     if (loading && !data) return null;
+
+    const handleShare = async () => {
+        const text = `${data.city}: ${tempLabel(data.temp, unit)}, ${data.description}`;
+        if (navigator.share) {
+            await navigator.share({ title: 'Hava Durumu', text });
+        } else {
+            await navigator.clipboard.writeText(text);
+            alert('Panoya kopyalandı: ' + text);
+        }
+    };
 
     return (
         <AnimatePresence mode="wait">
@@ -70,7 +109,20 @@ const WeatherCard = ({ data, loading, onShowForecast }) => {
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
                     style={{ width: '100%', textAlign: 'center' }}
                 >
-                    <h2 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>{data.city}</h2>
+                    {/* Header row: city name + share */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+                        <h2 style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0 }}>{data.city}</h2>
+                        <motion.button
+                            className="share-btn glass-button"
+                            onClick={handleShare}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            title="Paylaş"
+                        >
+                            <Share2 size={16} />
+                        </motion.button>
+                    </div>
+
                     <div style={{ textTransform: 'capitalize', fontSize: '1.2rem', color: 'var(--secondary-text)', marginBottom: '1.2rem' }}>
                         {data.description}
                     </div>
@@ -84,46 +136,52 @@ const WeatherCard = ({ data, loading, onShowForecast }) => {
                             />
                         )}
                         <div style={{ fontSize: '5rem', fontWeight: 700, lineHeight: 1 }}>
-                            {Math.round(data.temp)}°
+                            {convertTemp(data.temp, unit)}°
                         </div>
                     </div>
 
                     {/* Min / Max */}
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '1.2rem', marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--secondary-text)' }}>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <ArrowDown size={14} style={{ color: '#64b5f6' }} />{Math.round(data.tempMin)}°
+                            <ArrowDown size={14} style={{ color: '#64b5f6' }} />{convertTemp(data.tempMin, unit)}°
                         </span>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <ArrowUp size={14} style={{ color: '#ef9a9a' }} />{Math.round(data.tempMax)}°
+                            <ArrowUp size={14} style={{ color: '#ef9a9a' }} />{convertTemp(data.tempMax, unit)}°
                         </span>
                     </div>
 
-                    {/* Stats grid */}
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: '1rem',
-                        background: 'var(--glass-bg)',
-                        borderRadius: '16px',
-                        padding: '1.5rem',
-                        border: '1px solid var(--glass-border)',
-                        marginBottom: '1.2rem',
-                    }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                            <Thermometer size={24} color="rgba(255,255,255,0.7)" />
-                            <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>Hissedilen</span>
-                            <span style={{ fontWeight: 600 }}>{Math.round(data.feelsLike)}°</span>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                            <Droplets size={24} color="rgba(255,255,255,0.7)" />
-                            <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>Nem</span>
-                            <span style={{ fontWeight: 600 }}>%{data.humidity}</span>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                            <Wind size={24} color="rgba(255,255,255,0.7)" />
-                            <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>Rüzgar</span>
-                            <span style={{ fontWeight: 600 }}>{Math.round(data.windSpeed)} km/h</span>
-                        </div>
+                    {/* Stats grid — 6 cells */}
+                    <div className="stats-grid">
+                        <StatCell
+                            icon={<Thermometer size={22} color="rgba(255,255,255,0.7)" />}
+                            label="Hissedilen"
+                            value={`${convertTemp(data.feelsLike, unit)}°`}
+                        />
+                        <StatCell
+                            icon={<Droplets size={22} color="rgba(255,255,255,0.7)" />}
+                            label="Nem"
+                            value={`%${data.humidity}`}
+                        />
+                        <StatCell
+                            icon={<CompassIcon deg={data.windDeg} />}
+                            label={`Rüzgar ${windDir(data.windDeg)}`}
+                            value={`${Math.round(data.windSpeed)} km/h`}
+                        />
+                        <StatCell
+                            icon={<Gauge size={22} color="rgba(255,255,255,0.7)" />}
+                            label="Basınç"
+                            value={`${data.pressure} hPa`}
+                        />
+                        <StatCell
+                            icon={<Eye size={22} color="rgba(255,255,255,0.7)" />}
+                            label="Görüş"
+                            value={data.visibility != null ? `${data.visibility} km` : '—'}
+                        />
+                        <StatCell
+                            icon={<Wind size={22} color="rgba(255,255,255,0.7)" />}
+                            label="Rüzgar Yönü"
+                            value={data.windDeg != null ? `${data.windDeg}°` : '—'}
+                        />
                     </div>
 
                     {/* Sun Arc */}
