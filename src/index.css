@@ -466,6 +466,275 @@ body {
 }
 
 /* Scrollbar Customization */
+
+/* ── Shared label ──────────────────────────────────────────── */
+.section-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--secondary-text);
+    margin-bottom: 0.55rem;
+    padding-left: 2px;
+    display: flex;
+    align-items: center;
+}
+
+/* ── Forecast Button ───────────────────────────────────────── */
+.forecast-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+/* ── Sun Arc ───────────────────────────────────────────────── */
+.sun-arc-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.sun-arc-svg {
+    width: 220px;
+    height: 110px;
+    overflow: visible;
+}
+
+.sun-arc-times {
+    display: flex;
+    justify-content: space-between;
+    width: 220px;
+    font-size: 0.78rem;
+    color: var(--secondary-text);
+    margin-top: 0.25rem;
+}
+
+/* ── Hourly Forecast ───────────────────────────────────────── */
+.hourly-wrapper {
+    width: 100%;
+}
+
+.hourly-scroll {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.hourly-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    flex-shrink: 0;
+    min-width: 58px;
+}
+
+.hourly-time {
+    font-size: 0.72rem;
+    color: var(--secondary-text);
+}
+
+.hourly-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.hourly-temp {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ── AQI Badge ─────────────────────────────────────────────── */
+.aqi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid var(--aqi-color, rgba(255, 255, 255, 0.2));
+    background: rgba(0, 0, 0, 0.25);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.aqi-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--aqi-color, white);
+    flex-shrink: 0;
+}
+
+.aqi-label {
+    color: var(--secondary-text);
+    font-weight: 500;
+}
+
+.aqi-value {
+    color: var(--aqi-color, white);
+    font-weight: 700;
+}
+
+/* ── Favorites ─────────────────────────────────────────────── */
+.favorites-wrapper {
+    width: 100%;
+}
+
+.favorite-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    background: rgba(255, 215, 0, 0.06);
+    overflow: hidden;
+}
+
+.favorite-chip-name {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.35rem 0.6rem;
+    cursor: pointer;
+}
+
+.favorite-chip-name:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.favorite-chip-remove {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 0.35rem 0.45rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.favorite-chip-remove:hover {
+    color: rgba(255, 80, 80, 0.9);
+}
+
+/* ── Forecast Modal ────────────────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+}
+
+.modal-panel {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    border-radius: 24px 24px 0 0;
+    z-index: 101;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.modal-header h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.forecast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.forecast-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.forecast-day {
+    display: flex;
+    flex-direction: column;
+    min-width: 75px;
+}
+
+.forecast-day-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.forecast-day-date {
+    font-size: 0.72rem;
+    color: var(--secondary-text);
+}
+
+.forecast-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.forecast-desc {
+    flex: 1;
+    font-size: 0.82rem;
+    color: var(--secondary-text);
+    text-transform: capitalize;
+}
+
+.forecast-temps {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.forecast-max {
+    color: #ef9a9a;
+}
+
+.forecast-min {
+    color: #90caf9;
+}
+
 .suggestions {
     position: absolute;
     left: 0;

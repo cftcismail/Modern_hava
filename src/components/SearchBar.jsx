@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, LocateFixed } from 'lucide-react';
 import { geocodeCity } from '../services/weatherApi';
 
-const SearchBar = ({ onSearch, loading }) => {
+const SearchBar = ({ onSearch, onLocate, loading }) => {
     const [query, setQuery] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [locating, setLocating] = useState(false);
     const debounceRef = useRef(null);
     const suggestionsRef = useRef(null);
 
@@ -18,6 +19,19 @@ const SearchBar = ({ onSearch, loading }) => {
             setShowSuggestions(false);
             onSearch(query);
         }
+    };
+
+    const handleLocate = () => {
+        if (!navigator.geolocation) return;
+        setLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                setLocating(false);
+                onLocate && onLocate(pos.coords.latitude, pos.coords.longitude);
+            },
+            () => setLocating(false),
+            { timeout: 8000 }
+        );
     };
 
     const handleSelect = (city) => {
@@ -108,7 +122,7 @@ const SearchBar = ({ onSearch, loading }) => {
                 disabled={loading}
                 style={{
                     width: '100%',
-                    padding: '1rem 1.5rem',
+                    padding: '1rem 6.5rem 1rem 1.5rem',
                     fontSize: '1.1rem',
                     borderRadius: '16px',
                 }}
@@ -135,7 +149,7 @@ const SearchBar = ({ onSearch, loading }) => {
                 disabled={loading}
                 style={{
                     position: 'absolute',
-                    right: '8px',
+                    right: '56px',
                     top: '8px',
                     bottom: '8px',
                     width: '45px',
@@ -154,6 +168,37 @@ const SearchBar = ({ onSearch, loading }) => {
                     />
                 ) : (
                     <Search size={20} />
+                )}
+            </button>
+
+            {/* Locate button */}
+            <button
+                type="button"
+                className="glass-button"
+                onClick={handleLocate}
+                disabled={loading || locating}
+                title="Konumumu kullan"
+                style={{
+                    position: 'absolute',
+                    right: '8px',
+                    top: '8px',
+                    bottom: '8px',
+                    width: '45px',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    border: 'none',
+                }}
+            >
+                {locating ? (
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                        style={{ width: '18px', height: '18px', border: '2px solid white', borderTopColor: 'transparent', borderRadius: '50%' }}
+                    />
+                ) : (
+                    <LocateFixed size={18} />
                 )}
             </button>
         </motion.form>
