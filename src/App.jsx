@@ -3,6 +3,7 @@ import WeatherBackground from './components/WeatherBackground';
 import SearchBar from './components/SearchBar';
 import WeatherCard from './components/WeatherCard';
 import PopularCities from './components/PopularCities';
+import CityScrollTicker from './components/CityScrollTicker';
 import { fetchWeatherByCity } from './services/weatherApi';
 import './index.css';
 
@@ -40,6 +41,7 @@ function App() {
                 <div>
                     <PopularCities onSelect={handleSearch} />
                 </div>
+                <CityScrollTicker onSelect={handleSearch} />
 
                 {error && (
                     <div style={{ padding: '1rem', background: 'rgba(255,50,50,0.2)', borderRadius: '12px', border: '1px solid rgba(255,50,50,0.5)', textAlign: 'center' }}>

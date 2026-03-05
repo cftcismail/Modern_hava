@@ -82,7 +82,7 @@ body {
     padding: 0.45rem 0.75rem;
     border-radius: 12px;
     border: 1px solid var(--glass-border);
-    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
     color: white;
     display: inline-flex;
     align-items: center;
@@ -95,8 +95,8 @@ body {
 
 .city-chip:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
 }
 
 .city-chip:active {
@@ -117,18 +117,21 @@ body {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    box-shadow: 0 26px 60px rgba(0,0,0,0.35), inset 0 -6px 12px rgba(0,0,0,0.12);
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.35), inset 0 -6px 12px rgba(0, 0, 0, 0.12);
     transform: translate3d(calc(var(--mx, 0px) * 0.02), calc(var(--my, 0px) * 0.02), 0);
 }
+
 .sky-orb.sun {
     background: radial-gradient(circle at 30% 30%, #fff9c4, #ffd54f 40%, #ffb703 70%);
     animation: float 8s ease-in-out infinite;
 }
+
 .sky-orb.moon {
     background: radial-gradient(circle at 30% 30%, #f8f9fb, #dfe7f3 50%, #b7c3d9 100%);
-    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.25));
+    filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.25));
     animation: float 10s ease-in-out infinite;
 }
+
 /* Sun/Moon glow tint that colors the scene */
 .sky-glow {
     position: absolute;
@@ -144,60 +147,323 @@ body {
     transform: translate3d(calc(var(--mx, 0px) * 0.015), calc(var(--my, 0px) * 0.015), 0);
     transition: opacity 0.6s ease, transform 0.15s linear;
 }
-.sky-glow.sun { background: radial-gradient(circle, rgba(255,190,88,0.95) 0%, rgba(255,160,60,0.6) 30%, rgba(255,120,40,0.15) 60%, transparent 80%); opacity: 0.28; }
-.sky-glow.moon { background: radial-gradient(circle, rgba(200,220,255,0.9) 0%, rgba(150,175,240,0.5) 30%, rgba(110,140,210,0.12) 60%, transparent 80%); opacity: 0.16; }
+
+.sky-glow.sun {
+    background: radial-gradient(circle, rgba(255, 190, 88, 0.95) 0%, rgba(255, 160, 60, 0.6) 30%, rgba(255, 120, 40, 0.15) 60%, transparent 80%);
+    opacity: 0.28;
+}
+
+.sky-glow.moon {
+    background: radial-gradient(circle, rgba(200, 220, 255, 0.9) 0%, rgba(150, 175, 240, 0.5) 30%, rgba(110, 140, 210, 0.12) 60%, transparent 80%);
+    opacity: 0.16;
+}
 
 @keyframes float {
-    0% { transform: translateY(0) translateX(0); }
-    50% { transform: translateY(-12px) translateX(6px); }
-    100% { transform: translateY(0) translateX(0); }
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-12px) translateX(6px);
+    }
+
+    100% {
+        transform: translateY(0) translateX(0);
+    }
 }
 
 /* Clouds */
-.clouds { position: absolute; left: 0; top: 6%; width: 100%; height: 30vh; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
-.clouds.visible { opacity: 1; }
-.cloud { position: absolute; background: rgba(255,255,255,0.12); border-radius: 40px; filter: blur(6px); transform: translate3d(calc(var(--mx, 0px) * 0.01), calc(var(--my, 0px) * 0.01), 0); }
-.cloud-1 { width: 30%; height: 70px; left: -10%; top: 5%; animation: cloud-move 40s linear infinite; transform: translate3d(calc(var(--mx, 0px) * 0.02), calc(var(--my, 0px) * 0.015), 0); }
-.cloud-2 { width: 22%; height: 50px; left: -30%; top: 18%; animation: cloud-move 28s linear infinite; opacity: 0.9; transform: translate3d(calc(var(--mx, 0px) * 0.03), calc(var(--my, 0px) * 0.02), 0); }
-.cloud-3 { width: 18%; height: 40px; left: -20%; top: 30%; animation: cloud-move 35s linear infinite; opacity: 0.8; transform: translate3d(calc(var(--mx, 0px) * 0.015), calc(var(--my, 0px) * 0.01), 0); }
+.clouds {
+    position: absolute;
+    left: 0;
+    top: 6%;
+    width: 100%;
+    height: 30vh;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.clouds.visible {
+    opacity: 1;
+}
+
+.cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 40px;
+    filter: blur(6px);
+    transform: translate3d(calc(var(--mx, 0px) * 0.01), calc(var(--my, 0px) * 0.01), 0);
+}
+
+.cloud-1 {
+    width: 30%;
+    height: 70px;
+    left: -10%;
+    top: 5%;
+    animation: cloud-move 40s linear infinite;
+    transform: translate3d(calc(var(--mx, 0px) * 0.02), calc(var(--my, 0px) * 0.015), 0);
+}
+
+.cloud-2 {
+    width: 22%;
+    height: 50px;
+    left: -30%;
+    top: 18%;
+    animation: cloud-move 28s linear infinite;
+    opacity: 0.9;
+    transform: translate3d(calc(var(--mx, 0px) * 0.03), calc(var(--my, 0px) * 0.02), 0);
+}
+
+.cloud-3 {
+    width: 18%;
+    height: 40px;
+    left: -20%;
+    top: 30%;
+    animation: cloud-move 35s linear infinite;
+    opacity: 0.8;
+    transform: translate3d(calc(var(--mx, 0px) * 0.015), calc(var(--my, 0px) * 0.01), 0);
+}
 
 @keyframes cloud-move {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(140vw); }
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(140vw);
+    }
 }
 
 /* Rain */
-.rain { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
-.raindrop { position: absolute; width: 2px; height: 18px; background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.2)); bottom: 100%; opacity: 0.9; animation: fall 0.9s linear infinite; }
-.raindrop:nth-child(odd) { width: 1.5px; opacity: 0.8; }
-.raindrop { left: 0; }
+.rain {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.raindrop {
+    position: absolute;
+    width: 2px;
+    height: 18px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2));
+    bottom: 100%;
+    opacity: 0.9;
+    animation: fall 0.9s linear infinite;
+}
+
+.raindrop:nth-child(odd) {
+    width: 1.5px;
+    opacity: 0.8;
+}
+
+.raindrop {
+    left: 0;
+}
 
 @keyframes fall {
-    0% { transform: translateY(-10vh); opacity: 0; }
-    10% { opacity: 1; }
-    100% { transform: translateY(110vh); opacity: 0.6; }
+    0% {
+        transform: translateY(-10vh);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(110vh);
+        opacity: 0.6;
+    }
 }
 
 /* Snow */
-.snow { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
-.snowflake { width: 8px; height: 8px; background: rgba(255,255,255,0.9); border-radius: 50%; position: absolute; top: -10%; left: 50%; opacity: 0.9; animation: snow-fall 6s linear infinite; transform: translate3d(calc(var(--mx, 0px) * 0.005), calc(var(--my, 0px) * 0.005), 0); }
+.snow {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.snowflake {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    opacity: 0.9;
+    animation: snow-fall 6s linear infinite;
+    transform: translate3d(calc(var(--mx, 0px) * 0.005), calc(var(--my, 0px) * 0.005), 0);
+}
 
 @keyframes snow-fall {
-    0% { transform: translateY(-10vh) translateX(0) rotate(0deg); }
-    100% { transform: translateY(110vh) translateX(60px) rotate(360deg); }
+    0% {
+        transform: translateY(-10vh) translateX(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(110vh) translateX(60px) rotate(360deg);
+    }
 }
 
 /* Lightning */
-.lightning { position: absolute; left: 50%; top: 20%; width: 6px; height: 60vh; background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.2)); opacity: 0; animation: bolt 3s infinite; pointer-events: none; }
+.lightning {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    width: 6px;
+    height: 60vh;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.2));
+    opacity: 0;
+    animation: bolt 3s infinite;
+    pointer-events: none;
+}
 
 @keyframes bolt {
-    0% { opacity: 0; }
-    10% { opacity: 1; transform: translateY(-10px) skewX(-10deg); }
-    15% { opacity: 0; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(-10px) skewX(-10deg);
+    }
+
+    15% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 /* helper: distribute raindrops and snowflakes positions via inline style --i */
+
+/* ── City Scroll Ticker ──────────────────────────────────────── */
+.ticker-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.ticker-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--secondary-text);
+    margin-bottom: 0.55rem;
+    padding-left: 2px;
+}
+
+.ticker-viewport {
+    width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 8%,
+            black 92%,
+            transparent 100%);
+    -webkit-mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 8%,
+            black 92%,
+            transparent 100%);
+}
+
+.ticker-track {
+    display: flex;
+    gap: 0.75rem;
+    width: max-content;
+    animation: ticker-scroll 32s linear infinite;
+}
+
+.ticker-track.paused {
+    animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.ticker-card-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.ticker-card {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 14px;
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    min-width: 140px;
+}
+
+.ticker-card-btn:hover .ticker-card {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+}
+
+.ticker-card-btn:active .ticker-card {
+    transform: translateY(0) scale(0.98);
+}
+
+.ticker-card-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.ticker-card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+}
+
+.ticker-card-city {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-text);
+}
+
+.ticker-card-desc {
+    font-size: 0.7rem;
+    color: var(--secondary-text);
+    text-transform: capitalize;
+}
+
+.ticker-card-temp {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-left: auto;
+    padding-left: 0.5rem;
+    color: var(--primary-text);
+}
 
 /* Scrollbar Customization */
 .suggestions {
@@ -205,15 +471,16 @@ body {
     left: 0;
     right: 0;
     margin-top: 0.5rem;
-    background: rgba(0,0,0,0.55);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(6px);
     border-radius: 12px;
     max-height: 220px;
     overflow-y: auto;
     z-index: 20;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
 }
+
 .suggestion-item {
     padding: 0.6rem 0.9rem;
     display: flex;
@@ -223,9 +490,20 @@ body {
     color: white;
     font-size: 0.95rem;
 }
-.suggestion-item:hover { background: rgba(255,255,255,0.03); }
-.suggestion-icon { opacity: 0.9; }
-.suggestion-item.active { background: rgba(255,255,255,0.06); transform: translateX(4px); }
+
+.suggestion-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.suggestion-icon {
+    opacity: 0.9;
+}
+
+.suggestion-item.active {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+}
+
 ::-webkit-scrollbar {
     width: 8px;
 }
