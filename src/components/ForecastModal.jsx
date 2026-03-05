@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
+import { motion, AnimatePresence, useDragControls } from 'framer-motion'; // eslint-disable-line
 import { X } from 'lucide-react';
 
 const DAYS_TR = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
@@ -13,6 +13,14 @@ const WEATHER_ICONS = {
 const getIcon = (c) => WEATHER_ICONS[c] ?? '🌡️';
 
 const ForecastModal = ({ city, days, onClose }) => {
+    const dragControls = useDragControls();
+
+    const handleDragEnd = (_event, info) => {
+        if (info.offset.y > 130 || info.velocity.y > 850) {
+            onClose();
+        }
+    };
+
     return (
         <AnimatePresence>
             {days && days.length > 0 && (
@@ -29,11 +37,26 @@ const ForecastModal = ({ city, days, onClose }) => {
                     {/* Panel */}
                     <motion.div
                         className="modal-panel glass-panel"
-                        initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                        initial={{ opacity: 0, y: 120, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 60, scale: 0.95 }}
+                        exit={{ opacity: 0, y: 120, scale: 0.98 }}
                         transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+                        drag="y"
+                        dragConstraints={{ top: 0, bottom: 420 }}
+                        dragElastic={0.15}
+                        dragMomentum={false}
+                        onDragEnd={handleDragEnd}
+                        dragControls={dragControls}
+                        dragListener={false}
                     >
+                        <div
+                            className="modal-drag-area"
+                            onPointerDown={(event) => dragControls.start(event)}
+                            title="Sürükle"
+                        >
+                            <span className="modal-drag-handle" />
+                        </div>
+
                         <div className="modal-header">
                             <h3>📅 {city} — 7 Günlük Tahmin</h3>
                             <button className="modal-close glass-button" onClick={onClose}>

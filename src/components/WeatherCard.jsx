@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
 import { Droplets, Wind, Thermometer, ArrowDown, ArrowUp, Eye, Gauge, Share2 } from 'lucide-react';
 import { convertTemp, tempLabel } from './UnitToggle';
@@ -35,11 +35,10 @@ const StatCell = ({ icon, label, value }) => (
     </div>
 );
 
-const SunArc = ({ sunrise, sunset, timezone }) => {
+const SunArc = ({ sunrise, sunset, timezone, nowTs }) => {
     if (!sunrise || !sunset) return null;
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const nowUtc = useMemo(() => Math.floor(Date.now() / 1000), []);
+    const nowUtc = Number.isFinite(nowTs) ? nowTs : sunrise;
     const nowLocal = nowUtc + (timezone || 0);
     const riseLocal = sunrise + (timezone || 0);
     const setLocal = sunset + (timezone || 0);
@@ -49,17 +48,35 @@ const SunArc = ({ sunrise, sunset, timezone }) => {
     const progress = total > 0 ? elapsed / total : 0;
 
     const toHHMM = (utcTs) => {
-        const d = new Date(utcTs * 1000);
+        const tz = timezone || 0;
+        const d = new Date((utcTs + tz) * 1000);
         return d.toUTCString().slice(17, 22);
     };
 
-    const W = 220, H = 110, R = 90, cx = W / 2, cy = H;
+    const W = 220, H = 150, R = 86, cx = W / 2, cy = H - 30;
     const toPoint = (t) => {
         const angle = Math.PI - t * Math.PI;
-        return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+        // x-eksenine gore simetri: alt yay yerine ust yayda ciz
+        return { x: cx + R * Math.cos(angle), y: cy - R * Math.sin(angle) };
     };
+
+    const buildArcPath = (endT) => {
+        const clamped = Math.max(0, Math.min(1, endT));
+        const segments = Math.max(2, Math.ceil(clamped * 64));
+        const points = [];
+
+        for (let i = 0; i <= segments; i += 1) {
+            points.push(toPoint((i / segments) * clamped));
+        }
+
+        return points
+            .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`)
+            .join(' ');
+    };
+
     const sun = toPoint(progress);
-    const arcPath = `M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`;
+    const arcPath = buildArcPath(1);
+    const progressPath = buildArcPath(progress);
 
     return (
         <div className="sun-arc-wrapper">
@@ -67,7 +84,7 @@ const SunArc = ({ sunrise, sunset, timezone }) => {
                 <path d={arcPath} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="3" strokeLinecap="round" />
                 {progress > 0 && (
                     <path
-                        d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${sun.x} ${sun.y}`}
+                        d={progressPath}
                         fill="none"
                         stroke="rgba(255,200,80,0.7)"
                         strokeWidth="3"
@@ -185,7 +202,7 @@ const WeatherCard = ({ data, loading, onShowForecast, unit = 'C' }) => {
                     </div>
 
                     {/* Sun Arc */}
-                    <SunArc sunrise={data.sunrise} sunset={data.sunset} timezone={data.timezone} />
+                    <SunArc sunrise={data.sunrise} sunset={data.sunset} timezone={data.timezone} nowTs={data.timestamp} />
 
                     {/* 7-Day forecast button */}
                     {onShowForecast && (
